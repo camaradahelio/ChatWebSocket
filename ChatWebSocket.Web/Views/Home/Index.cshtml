@@ -7,6 +7,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <link href="~/css/site.css" rel="stylesheet"/>
     <title>Chat</title>
 </head>
 <body>
@@ -14,13 +15,29 @@
     <div>
         <h1>Chat</h1>
 
-        <input type="text" id="txtNickName" placeholder="Por favor, entre com seu nickname!" />
-        <button id="btnConectar">Conectar</button>
-        <input type="text" id="txtDestinatario" placeholder="Para quem quer enviar a mensagem? Por padrão é enviado para todos da sala" />
-        <input type=text id="txtMensagem" placeholder="Digite sua mensagem!" />
-        <button id="btnEnviar">Enviar</button>
+        <div>
+            <label>Nickname:</label>
+            <input type="text" id="txtNickName" placeholder="Por favor, entre com seu nickname!" />
+            <button id="btnConectar">Conectar</button>
+        </div>
 
-        <ul id="txtMensagens"></ul>
+        <div>
+            <label>Destinário:</label>
+            <input type="text" id="txtDestinatario" placeholder="Para quem deseja enviar a mensagem? Por padrão é enviado para todos da sala" />
+        </div>
+        
+        <div>
+            <label>Mensagem:</label>
+            <input type="text" id="txtMensagem" placeholder="Digite sua mensagem!" />
+        </div>
+
+        <div>
+            <button id="btnEnviar">Enviar</button>
+        </div>
+        <div>
+            <ul id="txtMensagens"></ul>
+        </div>
+
     </div>
 
     <script language="javascript" type="text/javascript">
@@ -46,6 +63,7 @@
         
         var list = document.getElementById("txtMensagens");
         var btnEnviar = document.getElementById("btnEnviar");
+
         btnEnviar.addEventListener("click", function () {
             var mensagem = document.getElementById("txtMensagem");
             var destinatario = document.getElementById("txtDestinatario");
