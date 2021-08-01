@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.WebSockets;
@@ -12,75 +14,88 @@ namespace ChatWebSocket
     {
         protected ChatSocketManager _chatSocketManager = new ChatSocketManager();
 
-        public async Task Connect(string nickName, WebSocket socket)
-        {            
-            await SendMessageToAllAsync($"User with id <b>{nickName}</b> has joined the chat");
+        public async Task EntrarNaSala(string nickName, WebSocket socket)
+        {
+            await EnviarMensagemParaTodosAsync($"Usuário <b>{nickName}</b> entrou para o bate papo!");
 
-            await this.OnConnected(nickName, socket);
+            await this.Connectar(nickName, socket);
 
-            await Receive(socket, async (result, buffer) =>
+            await RecebendoMensagem(socket, async (result, buffer) =>
             {
                 if (result.MessageType == WebSocketMessageType.Text)
                 {
-                    await this.ReceiveAsync(socket, result, buffer);
+                    await this.RecebendoMensagemAsync(socket, result, buffer);
                     return;
                 }
 
                 else if (result.MessageType == WebSocketMessageType.Close)
                 {
-                    await this.OnDisconnected(socket);
+                    await this.Desconectar(socket);
                     return;
                 }
-            });     
+            });
         }
 
-        private async Task OnConnected(string userId, WebSocket socket)
+        private async Task Connectar(string userId, WebSocket socket)
         {
-            _chatSocketManager.AddSocket(userId, socket);
+            _chatSocketManager.AdicionarSocket(userId, socket);
         }
 
-        private async Task OnDisconnected(WebSocket socket)
+        private async Task Desconectar(WebSocket socket)
         {
-            await _chatSocketManager.RemoveSocket(_chatSocketManager.GetId(socket));
+            await _chatSocketManager.RemoverSocket(_chatSocketManager.PegarSocker(socket));
         }
 
-        private async Task SendMessageAsync(WebSocket socket, string message)
+        private async Task EnviandoMensagemAsync(WebSocket socket, string mensagem)
         {
             if (socket.State != WebSocketState.Open)
                 return;
 
             await socket.SendAsync(buffer: new ArraySegment<byte>(
-                    array: Encoding.ASCII.GetBytes(message),
+                    array: Encoding.UTF8.GetBytes(mensagem),
                     offset: 0,
-                    count: message.Length),
+                    count: mensagem.Length),
                     messageType: WebSocketMessageType.Text,
                     endOfMessage: true,
                     cancellationToken: CancellationToken.None);
         }
 
-        private async Task SendMessageAsync(string socketId, string message)
+        private async Task EnviandoMensagemAsync(string nickName, string mensagem)
         {
-            await SendMessageAsync(_chatSocketManager.GetSocketById(socketId), message);
+            await EnviandoMensagemAsync(_chatSocketManager.PegarSockerPorNickName(nickName), mensagem);
         }
 
-        private async Task SendMessageToAllAsync(string message)
+        private async Task EnviarMensagemParaTodosAsync(string mensagem)
         {
-            foreach (var pair in _chatSocketManager.GetAll())
+            foreach (var pair in _chatSocketManager.Todos())
             {
                 if (pair.Value.State == WebSocketState.Open)
-                    await SendMessageAsync(pair.Value, message);
+                    await EnviandoMensagemAsync(pair.Value, mensagem);
             }
         }
 
-        private async Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
+        private async Task RecebendoMensagemAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
         {
-            var socketId = _chatSocketManager.GetId(socket);
-            var message = $"{socketId} said: {Encoding.UTF8.GetString(buffer, 0, result.Count)}";
+            var nickname = _chatSocketManager.PegarSocker(socket);
 
-            await SendMessageToAllAsync(message);
+            var stringMensagem = Encoding.UTF8.GetString(buffer, 0, result.Count);
+            MensagemChatModel chatModel = JsonConvert.DeserializeObject<MensagemChatModel>(stringMensagem);
+
+            string mensagem = string.Empty;
+
+            if (string.IsNullOrEmpty(chatModel.Destinatario))
+            {
+                mensagem = $"{nickname} diz: {chatModel.Mensagem}";
+                await EnviarMensagemParaTodosAsync(mensagem);
+            }
+            else
+            {
+                mensagem = $"{nickname} diz para {chatModel.Destinatario}: {chatModel.Mensagem} ";
+                await EnviandoMensagemAsync(chatModel.Destinatario, mensagem);
+            }
         }
 
-        private async Task Receive(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
+        private async Task RecebendoMensagem(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
         {
             var buffer = new byte[1024 * 4];
 

@@ -26,7 +26,7 @@ namespace ChatWebSocket.Web.Controllers
             if (isSocketRequest)
             {
                 WebSocket websocket = await context.WebSockets.AcceptWebSocketAsync();
-                await _socketConnection.Connect(nickName, websocket);
+                await _socketConnection.EntrarNaSala(nickName, websocket);
             }
             else
             {

@@ -2,45 +2,6 @@
     Layout = null;
 }
 
-<script language="javascript" type="text/javascript">
-    var uri = "ws://" + window.location.host + "/api/chat?nickName=Nenis";
-    function connect() {
-        socket = new WebSocket(uri);
-        socket.onopen = function (event) {
-            console.log("opened connection to " + uri);
-        };
-        socket.onclose = function (event) {
-            console.log("closed connection from " + uri);
-        };
-        socket.onmessage = function (event) {
-            appendItem(list, event.data);
-            console.log(event.data);
-        };
-        socket.onerror = function (event) {
-            console.log("error: " + event.data);
-        };
-    }
-    connect();
-    var list = document.getElementById("messages");
-    var button = document.getElementById("sendButton");
-    button.addEventListener("click", function () {
-
-        var input = document.getElementById("textInput");
-        sendMessage(input.value);
-
-        input.value = "";
-    });
-    function sendMessage(message) {
-        console.log("Sending: " + message);
-        socket.send(message);
-    }
-    function appendItem(list, message) {
-        var item = document.createElement("li");
-        item.appendChild(document.createTextNode(message));
-        list.appendChild(item);
-    }
-</script>
-
 <!DOCTYPE html>
 
 <html>
@@ -49,13 +10,78 @@
     <title>Chat</title>
 </head>
 <body>
+
     <div>
         <h1>Chat</h1>
 
-        <input type=text id="textInput" placeholder="Enter your text" />
-        <button id="sendButton">Send</button>
+        <input type="text" id="txtNickName" placeholder="Por favor, entre com seu nickname!" />
+        <button id="btnConectar">Conectar</button>
+        <input type="text" id="txtDestinatario" placeholder="Para quem quer enviar a mensagem? Por padrão é enviado para todos da sala" />
+        <input type=text id="txtMensagem" placeholder="Digite sua mensagem!" />
+        <button id="btnEnviar">Enviar</button>
 
-        <ul id="messages"></ul>        
+        <ul id="txtMensagens"></ul>
     </div>
+
+    <script language="javascript" type="text/javascript">
+        
+        function connect() {
+            var nick = document.getElementById("txtNickName");
+            var uri = "ws://" + window.location.host + `/api/chat?nickName=${nick.value}`;
+            socket = new WebSocket(uri);
+            socket.onopen = function (event) {
+                console.log("Conexão aberta com " + uri);
+            };
+            socket.onclose = function (event) {
+                console.log("Fechando conexão com " + uri);
+            };
+            socket.onmessage = function (event) {
+                appendItem(list, event.data);
+                console.log(event.data);
+            };
+            socket.onerror = function (event) {
+                console.log("Erro: " + event.data);
+            };
+        }
+        
+        var list = document.getElementById("txtMensagens");
+        var btnEnviar = document.getElementById("btnEnviar");
+        btnEnviar.addEventListener("click", function () {
+            var mensagem = document.getElementById("txtMensagem");
+            var destinatario = document.getElementById("txtDestinatario");
+            enviarMensagem(mensagem.value, destinatario.value);
+            mensagem.value = "";
+        });
+
+        var btnConectar = document.getElementById("btnConectar");
+        btnConectar.addEventListener("click", function () {
+
+            var nick = document.getElementById("txtNickName");
+            if (!nick.value) {
+                alert("Erro: nick name vazio. ");
+            }
+            else {
+                connect();
+            }
+        });
+
+        function enviarMensagem(mensagem, destinatario) {
+            console.log("Enviando: " + mensagem + ":" + destinatario);
+
+            var param =
+            {
+                Mensagem : mensagem,
+                Destinatario : destinatario
+            }
+
+            socket.send(JSON.stringify(param));
+        }
+        function appendItem(list, mensagem) {
+            var item = document.createElement("li");
+            item.appendChild(document.createTextNode(mensagem));
+            list.appendChild(item);
+        }
+    </script>
+
 </body>
 </html>

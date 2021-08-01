@@ -6,6 +6,6 @@ namespace ChatWebSocket
 {
     public interface IChatSocketConnection
     {
-        Task Connect(string nickName, WebSocket socket);
+        Task EntrarNaSala(string nickName, WebSocket socket);
     }
 }
