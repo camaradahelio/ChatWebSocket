@@ -12,5 +12,3 @@ services:
       dockerfile: ChatWebSocket.Web/Dockerfile
     networks:
     - chat-network
-    ports:
-      - "5000:5000"

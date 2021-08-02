@@ -16,7 +16,7 @@ namespace ChatWebSocket
 
         public async Task EntrarNaSala(string nickName, WebSocket socket)
         {
-            await EnviarMensagemParaTodosAsync($"Usuário <b>{nickName}</b> entrou para o bate papo!");
+            await EnviarMensagemParaTodosAsync($"Usuário {nickName} entrou para o bate papo!");
 
             await this.Connectar(nickName, socket);
 
