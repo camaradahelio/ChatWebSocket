@@ -7,6 +7,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["ChatWebSocket.Web/ChatWebSocket.Web.csproj", "ChatWebSocket.Web/"]
+COPY ["ChatWebSocket/ChatWebSocket.csproj", "ChatWebSocket/"]
 RUN dotnet restore "ChatWebSocket.Web/ChatWebSocket.Web.csproj"
 COPY . .
 WORKDIR "/src/ChatWebSocket.Web"

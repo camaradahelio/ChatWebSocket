@@ -1,0 +1,16 @@
+version: '3.4'
+
+networks:
+  chat-network:
+    driver: bridge 
+
+services:
+  chatwebsocket.web:
+    image: ${DOCKER_REGISTRY-}chatwebsocketweb
+    build:
+      context: .
+      dockerfile: ChatWebSocket.Web/Dockerfile
+    networks:
+    - chat-network
+    ports:
+      - "5000:5000"

@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatWebSocket", "ChatWebSocket\ChatWebSocket.csproj", "{494DF278-955A-4075-9601-F605600D528E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatWebSocket", "ChatWebSocket\ChatWebSocket.csproj", "{494DF278-955A-4075-9601-F605600D528E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatWebSocket.Web", "ChatWebSocket.Web\ChatWebSocket.Web.csproj", "{89683096-7837-40B6-81A1-EB5FFF4EB5F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChatWebSocket.Web", "ChatWebSocket.Web\ChatWebSocket.Web.csproj", "{89683096-7837-40B6-81A1-EB5FFF4EB5F1}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{559E0475-0F0A-4BF2-BA7C-FD674584B827}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{89683096-7837-40B6-81A1-EB5FFF4EB5F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89683096-7837-40B6-81A1-EB5FFF4EB5F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89683096-7837-40B6-81A1-EB5FFF4EB5F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{559E0475-0F0A-4BF2-BA7C-FD674584B827}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{559E0475-0F0A-4BF2-BA7C-FD674584B827}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{559E0475-0F0A-4BF2-BA7C-FD674584B827}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{559E0475-0F0A-4BF2-BA7C-FD674584B827}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
